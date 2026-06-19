@@ -1042,10 +1042,10 @@ function renderTable(cat) {
       +'<td><div class="item-name">'+item.name+'</div><div class="item-desc">'+item.desc+'</div></td>'
       +'<td><span class="cat-tag">'+(catMap[item.cat] || item.cat)+'</span></td>'
       +'<td><span class="price-badge">'+item.price+' DH</span></td>'
-      +'<td><button class="action-btn btn-toggle'+(item.active?'':' off')+'" onclick="toggleItem('+item.id+')">'+(item.active?'✅ Actif':'⛔ Masqué')+'</button></td>'
+      +'<td><button class="action-btn btn-toggle'+(item.active?'':' off')+'" onclick="toggleItem(\''+item.id+'\')">'+(item.active?'✅ Actif':'⛔ Masqué')+'</button></td>'
       +'<td>'
-        +'<button class="action-btn btn-edit" onclick="openEditModal('+item.id+')">✏️ Modifier</button>'
-        +'<button class="action-btn btn-delete" onclick="deleteItem('+item.id+')">🗑 Supprimer</button>'
+        +'<button class="action-btn btn-edit" onclick="openEditModal(\''+item.id+'\')">✏️ Modifier</button>'
+        +'<button class="action-btn btn-delete" onclick="deleteItem(\''+item.id+'\')">🗑 Supprimer</button>'
       +'</td>'
       +'</tr>';
   });

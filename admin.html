@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Crispy Guys!!</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --orange: #F7621E;
+  --blue: #3CB4E5;
+  --yellow: #FFD700;
+  --dark: #1a1a1a;
+  --white: #fff;
+  --red: #e53935;
+  --green: #25D366;
+  --bg: #f5f5f7;
+  --card: #ffffff;
+  --border: #eee;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Nunito',sans-serif; background:var(--bg); min-height:100vh; }
+
+/* ── LOGIN ── */
+#loginScreen {
+  min-height:100vh; display:flex; align-items:center; justify-content:center;
+  background: linear-gradient(135deg, var(--orange) 0%, #ff9a3c 50%, var(--blue) 100%);
+  position:relative; overflow:hidden;
+}
+#loginScreen::before {
+  content:''; position:absolute; top:-100px; left:-100px;
+  width:400px; height:400px; background:rgba(255,255,255,0.08);
+  border-radius:60% 40% 70% 30%/50% 60% 40% 50%;
+  animation:blob 8s ease-in-out infinite alternate;
+}
+#loginScreen::after {
+  content:''; position:absolute; bottom:-80px; right:-80px;
+  width:300px; height:300px; background:rgba(255,255,255,0.06);
+  border-radius:40% 60% 30% 70%/60% 40% 60% 40%;
+  animation:blob 10s ease-in-out infinite alternate-reverse;
+}
+@keyframes blob {
+  from { border-radius:60% 40% 70% 30%/50% 60% 40% 50%; }
+  to   { border-radius:30% 70% 40% 60%/60% 30% 70% 40%; }
+}
+.login-box {
+  background:rgba(255,255,255,0.97);
+  border-radius:28px;
+  padding:44px 40px 36px;
+  width:380px;
+  box-shadow:0 24px 60px rgba(0,0,0,0.18);
+  position:relative; z-index:10;
+  text-align:center;
+}
+.login-logo {
+  width:110px; height:110px; border-radius:50%;
+  object-fit:cover; margin:0 auto 16px;
+  border:4px solid var(--orange);
+  box-shadow:0 8px 24px rgba(247,98,30,0.25);
+  display:block;
+}
+.login-title { font-family:'Fredoka One',cursive; font-size:1.7rem; color:var(--orange); margin-bottom:4px; }
+.login-sub   { font-size:0.88rem; color:#999; margin-bottom:28px; font-weight:600; letter-spacing:1px; text-transform:uppercase; }
+.login-field {
+  width:100%; border:2px solid var(--border); border-radius:14px;
+  padding:13px 16px; font-family:'Nunito',sans-serif; font-size:1rem;
+  color:var(--dark); outline:none; transition:border 0.15s;
+  margin-bottom:14px; background:#fafafa;
+}
+.login-field:focus { border-color:var(--orange); background:#fff; }
+.login-btn {
+  width:100%; background:var(--orange); color:#fff; border:none;
+  border-radius:14px; padding:14px; font-family:'Fredoka One',cursive;
+  font-size:1.2rem; cursor:pointer; transition:transform 0.15s, box-shadow 0.15s;
+  box-shadow:0 6px 20px rgba(247,98,30,0.3);
+}
+.login-btn:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(247,98,30,0.4); }
+.login-error { color:var(--red); font-size:0.88rem; margin-top:10px; font-weight:700; display:none; }
+
+/* ── ADMIN PANEL ── */
+#adminPanel { display:none; }
+
+/* SIDEBAR */
+.sidebar {
+  position:fixed; top:0; left:0; bottom:0; width:240px;
+  background: linear-gradient(180deg, var(--orange) 0%, #d94f12 100%);
+  z-index:50; display:flex; flex-direction:column;
+  box-shadow:4px 0 20px rgba(0,0,0,0.12);
+}
+.sidebar-logo {
+  padding:24px 20px 20px;
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+  border-bottom:1px solid rgba(255,255,255,0.15);
+}
+.sidebar-logo img {
+  width:72px; height:72px; border-radius:50%; object-fit:cover;
+  border:3px solid rgba(255,255,255,0.6);
+  box-shadow:0 4px 14px rgba(0,0,0,0.2);
+}
+.sidebar-name { font-family:'Fredoka One',cursive; font-size:1.3rem; color:#fff; }
+.sidebar-role { font-size:0.75rem; color:rgba(255,255,255,0.7); font-weight:700; letter-spacing:1px; text-transform:uppercase; }
+
+.nav-items { flex:1; padding:16px 12px; display:flex; flex-direction:column; gap:4px; }
+.nav-item {
+  display:flex; align-items:center; gap:12px;
+  padding:11px 16px; border-radius:12px; cursor:pointer;
+  color:rgba(255,255,255,0.8); font-weight:700; font-size:0.95rem;
+  transition:all 0.15s; border:none; background:none; width:100%; text-align:left;
+}
+.nav-item:hover  { background:rgba(255,255,255,0.15); color:#fff; }
+.nav-item.active { background:rgba(255,255,255,0.22); color:#fff; box-shadow:inset 0 0 0 1px rgba(255,255,255,0.3); }
+.nav-item span.icon { font-size:1.2rem; width:24px; text-align:center; }
+
+.sidebar-footer { padding:16px 12px; border-top:1px solid rgba(255,255,255,0.15); }
+.logout-btn {
+  width:100%; background:rgba(255,255,255,0.12); color:#fff;
+  border:1px solid rgba(255,255,255,0.25); border-radius:12px;
+  padding:10px; font-family:'Nunito',sans-serif; font-weight:700;
+  cursor:pointer; transition:background 0.15s; display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.logout-btn:hover { background:rgba(255,255,255,0.22); }
+
+/* MAIN CONTENT */
+.main { margin-left:240px; padding:32px; min-height:100vh; }
+.topbar {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:28px;
+}
+.topbar-title { font-family:'Fredoka One',cursive; font-size:2rem; color:var(--dark); }
+.topbar-title span { color:var(--orange); }
+.topbar-badge {
+  background:var(--orange); color:#fff; border-radius:50px;
+  padding:6px 16px; font-family:'Fredoka One',cursive; font-size:0.95rem;
+  display:flex; align-items:center; gap:6px;
+}
+
+/* STATS CARDS */
+.stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:32px; }
+.stat-card {
+  background:var(--card); border-radius:20px; padding:20px 22px;
+  box-shadow:0 4px 16px rgba(0,0,0,0.07); border:1px solid var(--border);
+  display:flex; align-items:center; gap:16px;
+}
+.stat-icon {
+  width:50px; height:50px; border-radius:14px;
+  display:flex; align-items:center; justify-content:center; font-size:1.4rem;
+  flex-shrink:0;
+}
+.stat-info span { display:block; font-size:0.8rem; color:#999; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; }
+.stat-info strong { font-family:'Fredoka One',cursive; font-size:1.7rem; color:var(--dark); }
+
+/* TABS */
+.tabs { display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap; }
+.tab-btn {
+  background:var(--card); border:2px solid var(--border); color:#888;
+  font-family:'Fredoka One',cursive; font-size:0.95rem;
+  padding:8px 20px; border-radius:50px; cursor:pointer; transition:all 0.15s;
+}
+.tab-btn.active, .tab-btn:hover { background:var(--orange); border-color:var(--orange); color:#fff; }
+
+/* MENU TABLE */
+.section-card {
+  background:var(--card); border-radius:20px;
+  box-shadow:0 4px 16px rgba(0,0,0,0.07); border:1px solid var(--border);
+  overflow:hidden; margin-bottom:24px;
+}
+.section-head {
+  padding:18px 22px; display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid var(--border);
+}
+.section-head h2 { font-family:'Fredoka One',cursive; font-size:1.3rem; color:var(--dark); }
+.add-item-btn {
+  background:var(--orange); color:#fff; border:none; border-radius:12px;
+  padding:9px 18px; font-family:'Fredoka One',cursive; font-size:0.95rem;
+  cursor:pointer; display:flex; align-items:center; gap:6px; transition:transform 0.15s;
+}
+.add-item-btn:hover { transform:scale(1.04); }
+.category-list {
+  padding:18px 22px; display:flex; gap:10px; flex-wrap:wrap;
+}
+.category-pill {
+  background:#fafafa; border:1px solid var(--border); border-radius:50px;
+  padding:8px 12px; display:inline-flex; align-items:center; gap:8px;
+  font-weight:800; color:var(--dark);
+}
+.category-pill button {
+  border:none; background:#fce4ec; color:#c62828; border-radius:50%;
+  width:24px; height:24px; cursor:pointer; font-weight:900;
+}
+
+.menu-table { width:100%; border-collapse:collapse; }
+.menu-table th {
+  text-align:left; padding:12px 20px; font-size:0.78rem;
+  text-transform:uppercase; letter-spacing:0.5px; color:#bbb; font-weight:800;
+  background:#fafafa; border-bottom:1px solid var(--border);
+}
+.menu-table td { padding:14px 20px; border-bottom:1px solid #f5f5f5; vertical-align:middle; }
+.menu-table tr:last-child td { border-bottom:none; }
+.menu-table tr:hover td { background:#fafafa; }
+
+.item-thumb {
+  width:52px; height:52px; border-radius:12px; object-fit:cover;
+  background:#f3f3f3;
+}
+.item-thumb-placeholder {
+  width:52px; height:52px; border-radius:12px;
+  background:linear-gradient(135deg,#fff5f0,#ffe8dc);
+  display:flex; align-items:center; justify-content:center; font-size:1.4rem;
+}
+.item-name  { font-weight:800; color:var(--dark); font-size:0.95rem; }
+.item-desc  { font-size:0.78rem; color:#aaa; margin-top:2px; }
+.price-badge {
+  background:#fff5f0; color:var(--orange); font-family:'Fredoka One',cursive;
+  font-size:1rem; padding:4px 12px; border-radius:50px; display:inline-block;
+}
+.cat-tag {
+  font-size:0.75rem; font-weight:700; text-transform:uppercase;
+  padding:3px 10px; border-radius:50px; display:inline-block;
+}
+.cat-tacos    { background:#fff3e0; color:#e65100; }
+.cat-burger   { background:#fce4ec; color:#c62828; }
+.cat-plat     { background:#e8f5e9; color:#2e7d32; }
+.cat-sandwich { background:#e3f2fd; color:#1565c0; }
+.cat-promo    { background:#fff8e1; color:#f57f17; }
+
+.action-btn {
+  border:none; border-radius:10px; padding:7px 14px; cursor:pointer;
+  font-family:'Nunito',sans-serif; font-weight:700; font-size:0.82rem;
+  transition:all 0.15s; display:inline-flex; align-items:center; gap:5px;
+}
+.btn-edit   { background:#fff3e0; color:var(--orange); }
+.btn-edit:hover   { background:var(--orange); color:#fff; }
+.btn-delete { background:#fce4ec; color:#c62828; margin-left:6px; }
+.btn-delete:hover { background:#c62828; color:#fff; }
+.btn-toggle { background:#e8f5e9; color:#2e7d32; margin-left:6px; }
+.btn-toggle.off { background:#f5f5f5; color:#999; }
+.btn-toggle:hover { background:#2e7d32; color:#fff; }
+
+/* MODAL EDIT */
+.modal-overlay {
+  display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5);
+  z-index:200; align-items:center; justify-content:center;
+  backdrop-filter:blur(4px);
+}
+.modal-overlay.open { display:flex; }
+.modal-box {
+  background:#fff; border-radius:24px; padding:32px 28px;
+  width:100%; max-width:500px; max-height:90vh; overflow-y:auto;
+  animation:popIn 0.25s cubic-bezier(.22,1,.36,1);
+  box-shadow:0 24px 60px rgba(0,0,0,0.18);
+}
+@keyframes popIn { from { opacity:0; transform:scale(0.92); } to { opacity:1; transform:scale(1); } }
+.modal-title { font-family:'Fredoka One',cursive; font-size:1.5rem; color:var(--orange); margin-bottom:22px; }
+.field-group { margin-bottom:16px; }
+.field-group label { display:block; font-weight:800; color:#555; font-size:0.88rem; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.4px; }
+.field-group input, .field-group select, .field-group textarea {
+  width:100%; border:2px solid #eee; border-radius:12px; padding:11px 14px;
+  font-family:'Nunito',sans-serif; font-size:0.95rem; outline:none;
+  transition:border 0.15s; color:var(--dark); background:#fafafa;
+}
+.field-group input:focus, .field-group select:focus, .field-group textarea:focus { border-color:var(--orange); background:#fff; }
+.field-group textarea { resize:vertical; min-height:70px; }
+.modal-actions { display:flex; gap:10px; margin-top:22px; }
+.btn-save {
+  flex:1; background:var(--orange); color:#fff; border:none; border-radius:14px;
+  padding:13px; font-family:'Fredoka One',cursive; font-size:1.1rem; cursor:pointer;
+  transition:transform 0.15s; box-shadow:0 4px 14px rgba(247,98,30,0.3);
+}
+.btn-save:hover { transform:translateY(-2px); }
+.btn-cancel {
+  background:#f0f0f0; color:#888; border:none; border-radius:14px;
+  padding:13px 22px; font-family:'Fredoka One',cursive; font-size:1.1rem; cursor:pointer;
+}
+.btn-cancel:hover { background:#e0e0e0; }
+
+/* IMAGE PREVIEW in modal */
+.img-preview-wrap { position:relative; margin-top:8px; }
+.img-preview {
+  width:100%; height:140px; object-fit:cover; border-radius:12px;
+  display:none; border:2px solid var(--border);
+}
+.img-preview.show { display:block; }
+.import-img-btn {
+  width:100%; background:#fafafa; color:var(--dark); border:2px dashed #ddd;
+  border-radius:12px; padding:13px 14px; font-family:'Nunito',sans-serif;
+  font-weight:900; cursor:pointer; transition:border 0.15s, background 0.15s;
+}
+.import-img-btn:hover { border-color:var(--orange); background:#fff5f0; }
+
+/* TOAST */
+.toast-success {
+  position:fixed; top:24px; right:24px; z-index:999;
+  background:#25D366; color:#fff; padding:12px 22px;
+  border-radius:14px; font-weight:800; font-size:0.95rem;
+  box-shadow:0 8px 24px rgba(37,211,102,0.35);
+  display:none; align-items:center; gap:8px;
+  animation:toastSlide 0.3s cubic-bezier(.22,1,.36,1);
+}
+@keyframes toastSlide { from { opacity:0; transform:translateX(40px); } to { opacity:1; transform:translateX(0); } }
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .sidebar { width:200px; }
+  .main { margin-left:200px; padding:20px; }
+  .stats-grid { grid-template-columns:repeat(2,1fr); }
+}
+@media(max-width:650px){
+  .sidebar { display:none; }
+  .main { margin-left:0; }
+  .stats-grid { grid-template-columns:repeat(2,1fr); }
+}
+
+/* THEME TRADITIONNEL & PROFESSIONNEL */
+:root {
+  --orange: #8B1E2D;
+  --blue: #263238;
+  --yellow: #C7A45D;
+  --dark: #171717;
+  --white: #fff;
+  --red: #b4232f;
+  --green: #1f7a4d;
+  --bg: #F7F4EF;
+  --card: #ffffff;
+  --border: #e3ddd2;
+}
+body {
+  font-family:'Inter',sans-serif;
+  color:var(--dark);
+}
+#loginScreen {
+  background:#f7f4ef;
+}
+#loginScreen::before, #loginScreen::after {
+  display:none;
+}
+.login-box {
+  border-radius:8px;
+  border:1px solid var(--border);
+  box-shadow:0 14px 34px rgba(23,23,23,0.1);
+}
+.login-logo {
+  border-radius:8px;
+  border:1px solid var(--border);
+  box-shadow:none;
+}
+.login-title,
+.sidebar-name,
+.topbar-title,
+.section-head h2,
+.modal-title,
+.stat-info strong {
+  font-family:'Playfair Display',serif;
+  letter-spacing:0;
+}
+.login-title,
+.modal-title,
+.topbar-title span {
+  color:var(--orange);
+}
+.login-field,
+.field-group input,
+.field-group select,
+.field-group textarea {
+  border-radius:6px;
+  border:1px solid var(--border);
+  font-family:'Inter',sans-serif;
+}
+.login-btn,
+.add-item-btn,
+.btn-save,
+.tab-btn,
+.action-btn,
+.logout-btn,
+.import-img-btn {
+  font-family:'Inter',sans-serif;
+  font-weight:800;
+}
+.login-btn,
+.add-item-btn,
+.btn-save,
+.tab-btn.active,
+.tab-btn:hover {
+  background:var(--orange);
+  border-color:var(--orange);
+}
+.login-btn,
+.add-item-btn,
+.btn-save {
+  border-radius:6px;
+  box-shadow:none;
+}
+.login-btn:hover,
+.add-item-btn:hover,
+.btn-save:hover {
+  transform:translateY(-1px);
+}
+.sidebar {
+  background:#171717;
+  box-shadow:4px 0 18px rgba(0,0,0,0.1);
+}
+.sidebar-logo,
+.sidebar-footer {
+  border-color:rgba(255,255,255,0.1);
+}
+.sidebar-logo img {
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,0.25);
+  box-shadow:none;
+}
+.nav-item,
+.logout-btn {
+  border-radius:6px;
+}
+.nav-item.active {
+  background:var(--orange);
+  box-shadow:none;
+}
+.topbar-badge {
+  background:#fff;
+  color:var(--dark);
+  border:1px solid var(--border);
+  border-radius:6px;
+  font-family:'Inter',sans-serif;
+  font-weight:800;
+}
+.stat-card,
+.section-card,
+.modal-box {
+  border-radius:8px;
+  border:1px solid var(--border);
+  box-shadow:0 10px 24px rgba(23,23,23,0.06);
+}
+.stat-icon,
+.item-thumb,
+.item-thumb-placeholder,
+.btn-cancel,
+.category-pill,
+.category-pill button,
+.price-badge,
+.cat-tag,
+.action-btn,
+.import-img-btn,
+.img-preview {
+  border-radius:6px;
+}
+.tab-btn {
+  border-radius:6px;
+  border:1px solid var(--border);
+}
+.menu-table th {
+  color:#6f6a61;
+  background:#f7f4ef;
+}
+.menu-table tr:hover td {
+  background:#fbfaf7;
+}
+.price-badge {
+  background:#f1ece3;
+  color:var(--orange);
+  font-family:'Inter',sans-serif;
+  font-weight:900;
+}
+.btn-edit {
+  background:#f1ece3;
+  color:var(--orange);
+}
+.btn-edit:hover {
+  background:var(--orange);
+}
+.btn-delete {
+  background:#f7e7e9;
+  color:#9f1f2b;
+}
+.btn-toggle {
+  background:#e8f2ed;
+  color:#1f7a4d;
+}
+.toast-success {
+  border-radius:6px;
+  background:#1f7a4d;
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <img class="login-logo" src="images/logo.jpg" alt="Crispy Guys" onerror="this.style.display='none'">
+    <div class="login-title">Espace Admin</div>
+    <div class="login-sub">Crispy Guys!!</div>
+    <input class="login-field" type="text" id="loginUser" placeholder="Nom d'utilisateur" autocomplete="off">
+    <input class="login-field" type="password" id="loginPass" placeholder="Mot de passe">
+    <button class="login-btn" onclick="doLogin()">🔐 Se connecter</button>
+    <div class="login-error" id="loginError">❌ Identifiants incorrects</div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="adminPanel">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <img src="images/logo.jpg" alt="Logo" onerror="this.outerHTML='<div style=font-size:2.5rem>🐔</div>'">
+      <div class="sidebar-name">Crispy Guys!!</div>
+      <div class="sidebar-role">🔧 Administration</div>
+    </div>
+    <div class="nav-items">
+      <button class="nav-item active" onclick="showTab('menu',this)"><span class="icon">🍽</span> Menu</button>
+      <button class="nav-item" onclick="showTab('complements',this)"><span class="icon">✨</span> Compléments</button>
+      <button class="nav-item" onclick="showTab('stats',this)"><span class="icon">📊</span> Statistiques</button>
+      <button class="nav-item" onclick="goToSite()"><span class="icon">🌐</span> Voir le site</button>
+    </div>
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="doLogout()">🚪 Déconnexion</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title">Tableau de <span>bord</span></div>
+      <div class="topbar-badge">🟢 En ligne</div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-grid" id="statsGrid"></div>
+
+    <!-- MENU TAB -->
+    <div id="tabMenu">
+      <div class="tabs" id="catTabs"></div>
+      <div class="section-card">
+        <div class="section-head">
+          <h2>🗂 Catégories</h2>
+          <button class="add-item-btn" onclick="addCategory()">➕ Ajouter une catégorie</button>
+        </div>
+        <div class="category-list" id="categoryList"></div>
+      </div>
+      <div class="section-card">
+        <div class="section-head">
+          <h2 id="tableTitle">🍽 Tous les plats</h2>
+          <button class="add-item-btn" onclick="openAddModal()">➕ Ajouter un plat</button>
+        </div>
+        <table class="menu-table">
+          <thead>
+            <tr>
+              <th>Photo</th>
+              <th>Plat</th>
+              <th>Catégorie</th>
+              <th>Prix</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="menuTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- COMPLEMENTS TAB -->
+    <div id="tabComplements" style="display:none">
+      <div class="section-card">
+        <div class="section-head">
+          <h2>✨ Compléments (Frites, Boissons, Sauces...)</h2>
+          <button class="add-item-btn" onclick="openComplementModal()">➕ Ajouter un complément</button>
+        </div>
+        <table class="menu-table">
+          <thead>
+            <tr>
+              <th>Emoji</th>
+              <th>Nom</th>
+              <th>Prix</th>
+              <th>Type</th>
+              <th>Options</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="complementsTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- STATS TAB -->
+    <div id="tabStats" style="display:none">
+      <div class="section-card">
+        <div class="section-head"><h2>📊 Résumé du menu</h2></div>
+        <div style="padding:24px;" id="statsContent"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT/ADD MODAL -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal-box">
+    <div class="modal-title" id="modalTitle">✏️ Modifier le plat</div>
+    <input type="hidden" id="editId">
+    <div class="field-group">
+      <label>Nom du plat</label>
+      <input type="text" id="editName" placeholder="Ex: Burger Crispy">
+    </div>
+    <div class="field-group">
+      <label>Description</label>
+      <textarea id="editDesc" placeholder="Décrivez le plat..."></textarea>
+    </div>
+    <div class="field-group">
+      <label>Catégorie</label>
+      <select id="editCat"></select>
+    </div>
+    <div class="field-group">
+      <label>Prix (DH)</label>
+      <input type="number" id="editPrice" placeholder="Ex: 25" min="1">
+    </div>
+    <div class="field-group">
+      <label>Image du plat</label>
+      <input type="hidden" id="editImg">
+      <input type="file" id="editImgFile" accept="image/*" style="display:none">
+      <button type="button" class="import-img-btn" onclick="document.getElementById('editImgFile').click()">📷 Importer une image</button>
+      <div class="img-preview-wrap">
+        <img class="img-preview" id="imgPreview" src="" alt="aperçu">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Annuler</button>
+      <button class="btn-save" onclick="saveItem()">💾 Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- COMPLEMENT MODAL -->
+<div class="modal-overlay" id="complementModal">
+  <div class="modal-box">
+    <div class="modal-title" id="complementModalTitle">✏️ Modifier le complément</div>
+    <input type="hidden" id="complementId">
+    <div class="field-group">
+      <label>Nom du complément</label>
+      <input type="text" id="complementName" placeholder="Ex: Frites, Boisson">
+    </div>
+    <div class="field-group">
+      <label>Emoji</label>
+      <input type="text" id="complementEmoji" placeholder="Ex: 🍟, 🥤" maxlength="2">
+    </div>
+    <div class="field-group">
+      <label>Prix (DH)</label>
+      <input type="number" id="complementPrice" placeholder="Ex: 5" min="0">
+    </div>
+    <div class="field-group">
+      <label>Type</label>
+      <select id="complementType" onchange="toggleOptionsField()">
+        <option value="simple">Simple (prix fixe)</option>
+        <option value="options">Avec options (ex: boissons)</option>
+      </select>
+    </div>
+    <div class="field-group" id="optionsField" style="display:none;">
+      <label>Options (une par ligne: Nom,Prix)</label>
+      <textarea id="complementOptions" rows="5" placeholder="Coca-Cola 33cl,8&#10;Coca-Cola 50cl,12&#10;Sprite 33cl,8"></textarea>
+      <small style="color:#888; margin-top:4px; display:block;">Format: Nom,Prix (une option par ligne)</small>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeComplementModal()">Annuler</button>
+      <button class="btn-save" onclick="saveComplement()">💾 Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS TOAST -->
+<div class="toast-success" id="toastSuccess">✅ <span id="toastMsg">Enregistré !</span></div>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+  window.supabase = { createClient };
+  window.dispatchEvent(new Event('supabase-lib-ready'));
+</script>
+<script src="supabase-config.js"></script>
+<script>
+/* ═══════════════════════════
+   AUTH — mot de passe admin
+═══════════════════════════ */
+var ADMIN_USER = 'admin';
+var ADMIN_PASS = 'crispy2024';
+
+async function doLogin() {
+  var u = document.getElementById('loginUser').value.trim();
+  var p = document.getElementById('loginPass').value.trim();
+  if (u === ADMIN_USER && p === ADMIN_PASS) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminPanel').style.display  = 'block';
+    await renderAll();
+  } else {
+    var err = document.getElementById('loginError');
+    err.style.display = 'block';
+    setTimeout(function(){ err.style.display='none'; }, 3000);
+  }
+}
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Enter') doLogin();
+});
+
+function doLogout() {
+  document.getElementById('adminPanel').style.display  = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+}
+
+function goToSite() { window.open('index.html','_blank'); }
+
+/* ═══════════════════════════
+   MENU DATA (chargé depuis Supabase)
+═══════════════════════════ */
+var currentCat = 'all';
+var MENU = [];
+var CATEGORIES = [];
+var COMPLEMENTS = [];
+
+async function loadMenuFromSupabase() {
+  try {
+    const client = getSupabaseClient();
+    const { data, error } = await client
+      .from('products')
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (error) throw error;
+    
+    MENU = data.map(function(p) {
+      return {
+        id: p.id,
+        name: p.name,
+        desc: p.description || '',
+        price: parseFloat(p.price),
+        cat: p.category_id,
+        img: p.image_url || '',
+        active: p.active
+      };
+    });
+    
+    return MENU;
+  } catch(e) {
+    console.error('Erreur chargement menu:', e);
+    return [];
+  }
+}
+
+async function saveMenuToSupabase(item) {
+  try {
+    const client = getSupabaseClient();
+    const productData = {
+      name: item.name,
+      description: item.desc,
+      price: item.price,
+      category_id: item.cat,
+      image_url: item.img,
+      active: item.active !== false
+    };
+    
+    let result;
+    if (item.id && typeof item.id === 'string') {
+      // Update existing
+      const { data, error } = await client
+        .from('products')
+        .update(productData)
+        .eq('id', item.id)
+        .select();
+      
+      if (error) throw error;
+      result = data[0];
+    } else {
+      // Create new
+      const { data, error } = await client
+        .from('products')
+        .insert(productData)
+        .select();
+      
+      if (error) throw error;
+      result = data[0];
+    }
+    
+    return result;
+  } catch(e) {
+    console.error('Erreur sauvegarde menu:', e);
+    throw e;
+  }
+}
+
+async function deleteMenuItemFromSupabase(id) {
+  try {
+    const client = getSupabaseClient();
+    const { error } = await client
+      .from('products')
+      .delete()
+      .eq('id', id);
+    
+    if (error) throw error;
+    return true;
+  } catch(e) {
+    console.error('Erreur suppression menu:', e);
+    throw e;
+  }
+}
+
+async function toggleMenuItemInSupabase(id, active) {
+  try {
+    const client = getSupabaseClient();
+    const { error } = await client
+      .from('products')
+      .update({ active: active })
+      .eq('id', id);
+    
+    if (error) throw error;
+    return true;
+  } catch(e) {
+    console.error('Erreur toggle menu:', e);
+    throw e;
+  }
+}
+
+async function loadCategoriesFromSupabase() {
+  try {
+    const client = getSupabaseClient();
+    const { data, error } = await client
+      .from('categories')
+      .select('*')
+      .order('name', { ascending: true });
+    
+    if (error) throw error;
+    
+    CATEGORIES = data.map(function(c) {
+      return {
+        id: c.id,
+        name: c.name
+      };
+    });
+    
+    return CATEGORIES;
+  } catch(e) {
+    console.error('Erreur chargement catégories:', e);
+    return [];
+  }
+}
+
+async function saveCategoryToSupabase(name) {
+  try {
+    const client = getSupabaseClient();
+    const { data, error } = await client
+      .from('categories')
+      .insert({ name: name })
+      .select();
+    
+    if (error) throw error;
+    return data[0];
+  } catch(e) {
+    console.error('Erreur sauvegarde catégorie:', e);
+    throw e;
+  }
+}
+
+async function deleteCategoryFromSupabase(id) {
+  try {
+    const client = getSupabaseClient();
+    const { error } = await client
+      .from('categories')
+      .delete()
+      .eq('id', id);
+    
+    if (error) throw error;
+    return true;
+  } catch(e) {
+    console.error('Erreur suppression catégorie:', e);
+    throw e;
+  }
+}
+
+async function loadComplementsFromSupabase() {
+  try {
+    const client = getSupabaseClient();
+    const { data, error } = await client
+      .from('complements')
+      .select('*')
+      .order('name', { ascending: true });
+    
+    if (error) throw error;
+    
+    COMPLEMENTS = data.map(function(c) {
+      return {
+        id: c.id,
+        name: c.name,
+        emoji: c.emoji || '✨',
+        price: parseFloat(c.price),
+        type: c.type || 'simple',
+        hasOptions: c.type === 'options',
+        options: c.options || []
+      };
+    });
+    
+    return COMPLEMENTS;
+  } catch(e) {
+    console.error('Erreur chargement compléments:', e);
+    return [];
+  }
+}
+
+async function saveComplementToSupabase(item) {
+  try {
+    const client = getSupabaseClient();
+    const complementData = {
+      name: item.name,
+      emoji: item.emoji,
+      price: item.price,
+      type: item.type || 'simple',
+      options: item.options || null
+    };
+    
+    let result;
+    if (item.id && typeof item.id === 'string') {
+      const { data, error } = await client
+        .from('complements')
+        .update(complementData)
+        .eq('id', item.id)
+        .select();
+      
+      if (error) throw error;
+      result = data[0];
+    } else {
+      const { data, error } = await client
+        .from('complements')
+        .insert(complementData)
+        .select();
+      
+      if (error) throw error;
+      result = data[0];
+    }
+    
+    return result;
+  } catch(e) {
+    console.error('Erreur sauvegarde complément:', e);
+    throw e;
+  }
+}
+
+async function deleteComplementFromSupabase(id) {
+  try {
+    const client = getSupabaseClient();
+    const { error } = await client
+      .from('complements')
+      .delete()
+      .eq('id', id);
+    
+    if (error) throw error;
+    return true;
+  } catch(e) {
+    console.error('Erreur suppression complément:', e);
+    throw e;
+  }
+}
+
+// Fonctions de compatibilité
+function loadMenu() { return MENU; }
+function loadCategories() { return CATEGORIES; }
+function loadComplements() { return COMPLEMENTS; }
+
+/* ═══════════════════════════
+   RENDER ALL
+═══════════════════════════ */
+async function renderAll() {
+  await Promise.all([
+    loadCategoriesFromSupabase(),
+    loadMenuFromSupabase(),
+    loadComplementsFromSupabase()
+  ]);
+  renderStats();
+  renderCategoryList();
+  renderCatTabs();
+  renderTable(currentCat);
+  renderComplementsTable();
+}
+
+function renderStats() {
+  var total = MENU.length;
+  var active = MENU.filter(function(m){ return m.active; }).length;
+  var prices = MENU.map(function(m){ return m.price; });
+  var minP   = prices.length ? Math.min.apply(null, prices) : 0;
+  var maxP   = prices.length ? Math.max.apply(null, prices) : 0;
+  var cats   = CATEGORIES.length;
+  document.getElementById('statsGrid').innerHTML =
+    statCard('📋','Plats total', total, '#fff5f0','#F7621E') +
+    statCard('✅','Actifs', active, '#e8f5e9','#2e7d32') +
+    statCard('🏷','Prix min/max', minP+'–'+maxP+' DH', '#e3f2fd','#1565c0') +
+    statCard('🗂','Catégories', cats, '#fce4ec','#c62828');
+}
+
+function statCard(icon, label, val, bg, color) {
+  return '<div class="stat-card">'
+    +'<div class="stat-icon" style="background:'+bg+';color:'+color+'">'+icon+'</div>'
+    +'<div class="stat-info"><span>'+label+'</span><strong>'+val+'</strong></div>'
+    +'</div>';
+}
+
+function renderCatTabs() {
+  var cats = [{k:'all',l:'🍽 Tout'}].concat(CATEGORIES.map(function(c){ return {k:c.id,l:c.name}; }));
+  var html = '';
+  cats.forEach(function(c){
+    html += '<button class="tab-btn'+(currentCat===c.k?' active':'')+'" onclick="filterTable(\''+c.k+'\',this)">'+c.l+'</button>';
+  });
+  document.getElementById('catTabs').innerHTML = html;
+}
+
+function renderCategoryList() {
+  var html = '';
+  CATEGORIES.forEach(function(c){
+    html += '<span class="category-pill">'+c.name+' <button onclick="deleteCategory(\''+c.id+'\')">×</button></span>';
+  });
+  document.getElementById('categoryList').innerHTML = html || '<span style="color:#bbb;font-weight:800">Aucune catégorie. Ajoutez une catégorie avant d’ajouter des plats.</span>';
+  renderCategoryOptions();
+}
+
+function renderCategoryOptions() {
+  var select = document.getElementById('editCat');
+  if (!select) return;
+  select.innerHTML = CATEGORIES.map(function(c){
+    return '<option value="'+c.id+'">'+c.name+'</option>';
+  }).join('');
+}
+
+function filterTable(cat, btn) {
+  currentCat = cat;
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  renderTable(cat);
+}
+
+function renderTable(cat) {
+  var items = cat === 'all' ? MENU : MENU.filter(function(m){ return m.cat===cat; });
+  var catMap = {};
+  CATEGORIES.forEach(function(c){ catMap[c.id] = c.name; });
+  document.getElementById('tableTitle').textContent = cat === 'all' ? '🍽 Tous les plats' : (catMap[cat] || cat);
+  var html = '';
+  items.forEach(function(item){
+    var imgHtml = '<img class="item-thumb" src="'+item.img+'" alt="" onerror="this.outerHTML=\'<div class=item-thumb-placeholder>🍽</div>\'">';
+    html += '<tr>'
+      +'<td>'+imgHtml+'</td>'
+      +'<td><div class="item-name">'+item.name+'</div><div class="item-desc">'+item.desc+'</div></td>'
+      +'<td><span class="cat-tag">'+(catMap[item.cat] || item.cat)+'</span></td>'
+      +'<td><span class="price-badge">'+item.price+' DH</span></td>'
+      +'<td><button class="action-btn btn-toggle'+(item.active?'':' off')+'" onclick="toggleItem('+item.id+')">'+(item.active?'✅ Actif':'⛔ Masqué')+'</button></td>'
+      +'<td>'
+        +'<button class="action-btn btn-edit" onclick="openEditModal('+item.id+')">✏️ Modifier</button>'
+        +'<button class="action-btn btn-delete" onclick="deleteItem('+item.id+')">🗑 Supprimer</button>'
+      +'</td>'
+      +'</tr>';
+  });
+  document.getElementById('menuTableBody').innerHTML = html || '<tr><td colspan="6" style="text-align:center;padding:30px;color:#bbb">Aucun plat dans cette catégorie</td></tr>';
+
+  // Stats tab
+  var statHtml = '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;">';
+  CATEGORIES.forEach(function(c){
+    var n = MENU.filter(function(m){ return m.cat===c.id; }).length;
+    var avg = MENU.filter(function(m){ return m.cat===c.id; }).reduce(function(a,m){ return a+m.price; },0);
+    avg = n ? Math.round(avg/n) : 0;
+    statHtml += '<div style="background:#fafafa;border-radius:16px;padding:18px;border:1px solid #eee">'
+      +'<div style="font-family:Fredoka One,cursive;font-size:1.1rem;color:var(--dark)">'+c.name+'</div>'
+      +'<div style="font-size:0.82rem;color:#aaa;margin-top:4px">'+n+' plats · Prix moy. '+avg+' DH</div>'
+      +'</div>';
+  });
+  statHtml += '</div>';
+  document.getElementById('statsContent').innerHTML = statHtml;
+}
+
+/* ═══════════════════════════
+   TABS
+═══════════════════════════ */
+function showTab(tab, btn) {
+  document.querySelectorAll('.nav-item').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.getElementById('tabMenu').style.display       = tab==='menu'       ? 'block' : 'none';
+  document.getElementById('tabComplements').style.display = tab==='complements' ? 'block' : 'none';
+  document.getElementById('tabStats').style.display      = tab==='stats'      ? 'block' : 'none';
+}
+
+/* ═══════════════════════════
+   CRUD
+═══════════════════════════ */
+function slugify(text) {
+  return text.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '') || 'categorie';
+}
+
+/* ═══════════════════════════
+   COMPLEMENTS CRUD
+═══════════════════════════ */
+function renderComplementsTable() {
+  var tbody = document.getElementById('complementsTableBody');
+  var html = '';
+  COMPLEMENTS.forEach(function(comp){
+    var typeText = comp.hasOptions ? 'Avec options' : 'Simple';
+    var optionsText = comp.hasOptions ? comp.options.length + ' options' : '-';
+    html += '<tr>'
+      +'<td style="font-size:1.5rem;">'+comp.emoji+'</td>'
+      +'<td><div class="item-name">'+comp.name+'</div></td>'
+      +'<td><span class="price-badge">'+comp.price+' DH</span></td>'
+      +'<td><span class="cat-tag" style="background:#e8f5e9;color:#2e7d32;">'+typeText+'</span></td>'
+      +'<td>'+optionsText+'</td>'
+      +'<td>'
+        +'<button class="action-btn btn-edit" onclick="openEditComplementModal('+comp.id+')">✏️ Modifier</button>'
+        +'<button class="action-btn btn-delete" onclick="deleteComplement('+comp.id+')">🗑 Supprimer</button>'
+      +'</td>'
+      +'</tr>';
+  });
+  tbody.innerHTML = html || '<tr><td colspan="6" style="text-align:center;padding:30px;color:#bbb">Aucun complément</td></tr>';
+}
+
+function openComplementModal() {
+  document.getElementById('complementModalTitle').textContent = '➕ Ajouter un complément';
+  document.getElementById('complementId').value = '';
+  document.getElementById('complementName').value = '';
+  document.getElementById('complementEmoji').value = '';
+  document.getElementById('complementPrice').value = '';
+  document.getElementById('complementType').value = 'simple';
+  document.getElementById('complementOptions').value = '';
+  toggleOptionsField();
+  document.getElementById('complementModal').classList.add('open');
+}
+
+function openEditComplementModal(id) {
+  var comp = COMPLEMENTS.find(function(c){ return c.id === id; });
+  if(!comp) return;
+  document.getElementById('complementModalTitle').textContent = '✏️ Modifier le complément';
+  document.getElementById('complementId').value = id;
+  document.getElementById('complementName').value = comp.name;
+  document.getElementById('complementEmoji').value = comp.emoji;
+  document.getElementById('complementPrice').value = comp.price;
+  document.getElementById('complementType').value = comp.hasOptions ? 'options' : 'simple';
+  if(comp.hasOptions && comp.options) {
+    var optionsText = comp.options.map(function(o){ return o.name+','+o.price; }).join('\n');
+    document.getElementById('complementOptions').value = optionsText;
+  } else {
+    document.getElementById('complementOptions').value = '';
+  }
+  toggleOptionsField();
+  document.getElementById('complementModal').classList.add('open');
+}
+
+function closeComplementModal() {
+  document.getElementById('complementModal').classList.remove('open');
+}
+
+function toggleOptionsField() {
+  var type = document.getElementById('complementType').value;
+  var optionsField = document.getElementById('optionsField');
+  optionsField.style.display = type === 'options' ? 'block' : 'none';
+}
+
+async function saveComplement() {
+  var id = document.getElementById('complementId').value;
+  var name = document.getElementById('complementName').value.trim();
+  var emoji = document.getElementById('complementEmoji').value.trim();
+  var price = parseInt(document.getElementById('complementPrice').value);
+  var type = document.getElementById('complementType').value;
+  var optionsText = document.getElementById('complementOptions').value.trim();
+
+  if(!name || !emoji || isNaN(price)) {
+    alert('Veuillez remplir tous les champs requis');
+    return;
+  }
+
+  var hasOptions = type === 'options';
+  var options = [];
+  if(hasOptions && optionsText) {
+    var lines = optionsText.split('\n');
+    lines.forEach(function(line){
+      var parts = line.split(',');
+      if(parts.length >= 2) {
+        var optName = parts[0].trim();
+        var optPrice = parseInt(parts[1].trim());
+        if(optName && !isNaN(optPrice)) {
+          options.push({ name: optName, price: optPrice });
+        }
+      }
+    });
+    if(options.length === 0) {
+      alert('Veuillez ajouter au moins une option valide');
+      return;
+    }
+  }
+
+  try {
+    var item = {
+      id: id || null,
+      name: name,
+      emoji: emoji,
+      price: price,
+      type: type,
+      options: hasOptions ? options : null
+    };
+
+    await saveComplementToSupabase(item);
+    await loadComplementsFromSupabase();
+    renderComplementsTable();
+    closeComplementModal();
+    showToast('Complément enregistré !');
+  } catch(e) {
+    alert('Erreur lors de la sauvegarde: ' + e.message);
+  }
+}
+
+async function deleteComplement(id) {
+  if(!confirm('Supprimer ce complément ?')) return;
+  try {
+    await deleteComplementFromSupabase(id);
+    await loadComplementsFromSupabase();
+    renderComplementsTable();
+    showToast('Complément supprimé.');
+  } catch(e) {
+    alert('Erreur lors de la suppression: ' + e.message);
+  }
+}
+
+async function addCategory() {
+  var name = prompt('Nom de la catégorie :');
+  if (!name || !name.trim()) return;
+  name = name.trim();
+  try {
+    var result = await saveCategoryToSupabase(name);
+    await loadCategoriesFromSupabase();
+    currentCat = result.id;
+    await renderAll();
+    showToast('Catégorie ajoutée !');
+  } catch(e) {
+    alert('Erreur lors de l\'ajout: ' + e.message);
+  }
+}
+
+async function deleteCategory(id) {
+  var used = MENU.some(function(m){ return m.cat === id; });
+  if (used) {
+    alert('Cette catégorie contient des plats. Supprimez ou déplacez les plats avant de supprimer la catégorie.');
+    return;
+  }
+  if (!confirm('Supprimer cette catégorie ?')) return;
+  try {
+    await deleteCategoryFromSupabase(id);
+    await loadCategoriesFromSupabase();
+    if (currentCat === id) currentCat = 'all';
+    await renderAll();
+    showToast('Catégorie supprimée.');
+  } catch(e) {
+    alert('Erreur lors de la suppression: ' + e.message);
+  }
+}
+
+function openAddModal() {
+  if (CATEGORIES.length === 0) {
+    alert('Ajoutez d’abord une catégorie.');
+    return;
+  }
+  document.getElementById('modalTitle').textContent = '➕ Ajouter un plat';
+  document.getElementById('editId').value    = '';
+  document.getElementById('editName').value  = '';
+  document.getElementById('editDesc').value  = '';
+  renderCategoryOptions();
+  document.getElementById('editCat').value   = currentCat !== 'all' ? currentCat : CATEGORIES[0].id;
+  document.getElementById('editPrice').value = '';
+  document.getElementById('editImg').value   = '';
+  document.getElementById('editImgFile').value = '';
+  document.getElementById('imgPreview').classList.remove('show');
+  document.getElementById('editModal').classList.add('open');
+}
+
+function openEditModal(id) {
+  var item = MENU.find(function(m){ return m.id===id; });
+  if (!item) return;
+  document.getElementById('modalTitle').textContent = '✏️ Modifier le plat';
+  document.getElementById('editId').value    = id;
+  document.getElementById('editName').value  = item.name;
+  document.getElementById('editDesc').value  = item.desc;
+  renderCategoryOptions();
+  document.getElementById('editCat').value   = item.cat;
+  document.getElementById('editPrice').value = item.price;
+  document.getElementById('editImg').value   = item.img;
+  document.getElementById('editImgFile').value = '';
+  var prev = document.getElementById('imgPreview');
+  if (item.img) { prev.src = item.img; prev.classList.add('show'); }
+  else { prev.classList.remove('show'); }
+  document.getElementById('editModal').classList.add('open');
+}
+
+document.getElementById('editImgFile').addEventListener('change', function(){
+  var file = this.files && this.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var dataUrl = e.target.result;
+    document.getElementById('editImg').value = dataUrl;
+    var prev = document.getElementById('imgPreview');
+    prev.src = dataUrl;
+    prev.classList.add('show');
+  };
+  reader.readAsDataURL(file);
+});
+
+function closeModal() { document.getElementById('editModal').classList.remove('open'); }
+document.getElementById('editModal').addEventListener('click', function(e){
+  if (e.target === this) closeModal();
+});
+
+async function uploadImageToSupabase(file) {
+  try {
+    const client = getSupabaseClient();
+    const fileName = Date.now() + '-' + file.name;
+    const { data, error } = await client.storage
+      .from(SUPABASE_CONFIG.storageBucket)
+      .upload(fileName, file);
+    
+    if (error) throw error;
+    
+    const { data: { publicUrl } } = client.storage
+      .from(SUPABASE_CONFIG.storageBucket)
+      .getPublicUrl(fileName);
+    
+    return publicUrl;
+  } catch(e) {
+    console.error('Erreur upload image:', e);
+    throw e;
+  }
+}
+
+async function saveItem() {
+  var id    = document.getElementById('editId').value;
+  var name  = document.getElementById('editName').value.trim();
+  var desc  = document.getElementById('editDesc').value.trim();
+  var cat   = document.getElementById('editCat').value;
+  var price = parseInt(document.getElementById('editPrice').value);
+  var img   = document.getElementById('editImg').value.trim();
+  var fileInput = document.getElementById('editImgFile');
+  
+  if (!name || !price || !cat) { alert('Remplissez le nom, la catégorie et le prix !'); return; }
+  
+  try {
+    // Upload new image if file is selected
+    if (fileInput.files && fileInput.files[0]) {
+      img = await uploadImageToSupabase(fileInput.files[0]);
+    }
+    
+    var item = {
+      id: id || null,
+      name: name,
+      desc: desc,
+      cat: cat,
+      price: price,
+      img: img,
+      active: true
+    };
+    
+    await saveMenuToSupabase(item);
+    await loadMenuFromSupabase();
+    closeModal();
+    await renderAll();
+    showToast(id ? 'Plat modifié avec succès !' : 'Nouveau plat ajouté !');
+  } catch(e) {
+    alert('Erreur lors de la sauvegarde: ' + e.message);
+  }
+}
+
+async function deleteItem(id) {
+  if (!confirm('Supprimer ce plat ?')) return;
+  try {
+    await deleteMenuItemFromSupabase(id);
+    await loadMenuFromSupabase();
+    await renderAll();
+    showToast('Plat supprimé.');
+  } catch(e) {
+    alert('Erreur lors de la suppression: ' + e.message);
+  }
+}
+
+async function toggleItem(id) {
+  var item = MENU.find(function(m){ return m.id===id; });
+  if (!item) return;
+  try {
+    await toggleMenuItemInSupabase(id, !item.active);
+    await loadMenuFromSupabase();
+    await renderAll();
+    showToast(item.active ? 'Plat masqué ⛔' : 'Plat activé ✅');
+  } catch(e) {
+    alert('Erreur lors de la modification: ' + e.message);
+  }
+}
+
+function showToast(msg) {
+  var t = document.getElementById('toastSuccess');
+  document.getElementById('toastMsg').textContent = msg;
+  t.style.display = 'flex';
+  setTimeout(function(){ t.style.display='none'; }, 3000);
+}
+</script>
+</body>
+</html>

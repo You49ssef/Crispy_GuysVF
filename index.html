@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/jpeg" href="logo.jpeg">
+<link rel="apple-touch-icon" href="logo.jpeg">
 <title>Crispy Guys!! - Commander</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
 <style>
   :root {
     --orange: #F7621E;
@@ -29,7 +30,7 @@
   }
   
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; overflow-x: hidden; color: var(--text); transition: background 0.3s ease, color 0.3s ease; }
+  body { font-family: Arial, sans-serif; background: var(--bg); min-height: 100vh; overflow-x: hidden; color: var(--text); transition: background 0.3s ease, color 0.3s ease; }
   body::before {
     content: ''; position: fixed; top: -80px; left: -80px; width: 340px; height: 340px;
     background: var(--blue); border-radius: 60% 40% 70% 30% / 50% 60% 40% 50%;
@@ -92,7 +93,7 @@
   .logo-wrap { display: inline-flex; flex-direction: column; align-items: center; gap: 4px; }
   .logo-icon { font-size: 64px; animation: bounce 1.5s infinite; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.18)); }
   @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-  .logo-title { font-family: 'Inter', sans-serif;
+  .logo-title { font-family: Arial, sans-serif;
 font-weight: 700; font-size: 3rem; color: var(--white); text-shadow: 3px 4px 0 rgba(0,0,0,0.15); }
   .logo-title span { color: var(--yellow); }
   .tagline { font-size: 1rem; color: rgba(255,255,255,0.85); font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; }
@@ -116,7 +117,7 @@ font-weight: 700; font-size: 3rem; color: var(--white); text-shadow: 3px 4px 0 r
   .cart-float {
     position: fixed; top: 22px; right: 22px; z-index: 100;
     background: var(--yellow); color: var(--dark); border: none;
-    border-radius: 50px; padding: 10px 22px; font-family: 'Inter', sans-serif;
+    border-radius: 50px; padding: 10px 22px; font-family: Arial, sans-serif;
 font-weight: 700;
     font-size: 1.1rem; cursor: pointer; box-shadow: 0 4px 18px rgba(0,0,0,0.18);
     display: flex; align-items: center; gap: 8px; transition: transform 0.18s, box-shadow 0.18s;
@@ -132,7 +133,7 @@ font-weight: 700;
   .categories { position: relative; z-index: 10; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; padding: 0 20px 24px; }
   .cat-btn {
     background: rgba(255,255,255,0.22); border: 2.5px solid rgba(255,255,255,0.55);
-    color: #fff; font-family: 'Inter', sans-serif;
+    color: #fff; font-family: Arial, sans-serif;
 font-weight: 700; font-size: 1rem;
     padding: 8px 22px; border-radius: 50px; cursor: pointer; transition: all 0.18s;
   }
@@ -141,7 +142,7 @@ font-weight: 700; font-size: 1rem;
   /* MENU */
   .menu-section { position: relative; z-index: 10; max-width: 1100px; margin: 0 auto; padding: 0 18px 40px; }
   .section-title {
-    font-family: 'Inter', sans-serif;
+    font-family: Arial, sans-serif;
 font-weight: 700; font-size: 1.9rem; color: var(--white);
     text-shadow: 2px 3px 0 rgba(0,0,0,0.12); margin-bottom: 18px;
     display: flex; align-items: center; gap: 10px;
@@ -159,11 +160,11 @@ font-weight: 700; font-size: 1.9rem; color: var(--white);
   }
 
   .card-body { padding: 14px 16px 16px; }
-  .card-name { font-family: 'Inter', sans-serif;
+  .card-name { font-family: Arial, sans-serif;
 font-weight: 700; font-size: 1.15rem; color: var(--dark); margin-bottom: 4px; }
   .card-desc { font-size: 0.82rem; color: #888; margin-bottom: 12px; line-height: 1.4; }
   .card-footer { display: flex; align-items: center; justify-content: space-between; }
-  .card-price { font-family: 'Inter', sans-serif;
+  .card-price { font-family: Arial, sans-serif;
 font-weight: 700; font-size: 1.4rem; color: var(--orange); }
   .card-price span { font-size: 0.8rem; color: #aaa; font-weight: 600; }
   .add-btn {
@@ -182,7 +183,7 @@ font-weight: 700; font-size: 1.4rem; color: var(--orange); }
   .modal { background: var(--white); border-radius: 30px 30px 0 0; width: 100%; max-width: 540px; padding: 30px 24px 24px; max-height: 85vh; overflow-y: auto; animation: slideUp 0.3s cubic-bezier(.22,1,.36,1); }
   @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
   .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
-  .modal-title { font-family: 'Inter', sans-serif;
+  .modal-title { font-family: Arial, sans-serif;
 font-weight: 700; font-size: 1.7rem; color: var(--orange); }
   .close-btn { background: #f0f0f0; border: none; border-radius: 50%; width: 38px; height: 38px; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
   .close-btn:hover { background: #e0e0e0; }
@@ -198,20 +199,20 @@ font-weight: 700; font-size: 1.7rem; color: var(--orange); }
   .qty-num { font-weight: 800; font-size: 1rem; min-width: 20px; text-align: center; }
   .cart-empty { text-align: center; padding: 40px 0; color: #bbb; font-size: 1.1rem; }
   .cart-empty div { font-size: 3rem; margin-bottom: 10px; }
-  .cart-total { display: flex; justify-content: space-between; align-items: center; padding: 18px 0 10px; font-family: 'Inter', sans-serif;
+  .cart-total { display: flex; justify-content: space-between; align-items: center; padding: 18px 0 10px; font-family: Arial, sans-serif;
 font-weight: 700; font-size: 1.3rem; color: var(--dark); }
   .cart-total strong { color: var(--orange); font-size: 1.6rem; }
   .name-input-wrap { margin: 12px 0 16px; }
   .name-input-wrap label { display: block; font-weight: 800; margin-bottom: 7px; color: #444; font-size: 0.95rem; }
   .name-input-wrap input, .name-input-wrap textarea {
     width: 100%; border: 2px solid #eee; border-radius: 14px; padding: 12px 16px;
-    font-family: 'Nunito', sans-serif; font-size: 1rem; color: var(--dark);
+    font-family: Arial, sans-serif; font-size: 1rem; color: var(--dark);
     outline: none; transition: border 0.15s; resize: none;
   }
   .name-input-wrap input:focus, .name-input-wrap textarea:focus { border-color: var(--orange); }
   .whatsapp-btn {
     width: 100%; background: #25D366; color: #fff; border: none; border-radius: 18px;
-    padding: 16px; font-family: 'Inter', sans-serif;
+    padding: 16px; font-family: Arial, sans-serif;
 font-weight: 700; font-size: 1.3rem; cursor: pointer;
     display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 8px;
     box-shadow: 0 6px 22px rgba(37,211,102,0.3); transition: transform 0.18s, box-shadow 0.18s;
@@ -221,14 +222,156 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
 
   footer { position: relative; z-index: 10; text-align: center; color: rgba(255,255,255,0.7); font-size: 0.88rem; padding: 0 20px 30px; }
 
-  @media (max-width: 600px) {
-    .logo-title { font-size: 2.2rem; }
-    .menu-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .card-img, .card-img-placeholder { height: 120px; }
-    #notif-container { left: 12px; right: 12px; }
-    .notif-toast { min-width: unset; max-width: 100%;
-      }
+
+  /* ══════════════════════════════════
+     RESPONSIVE MOBILE COMPLET
+  ══════════════════════════════════ */
+
+  /* Tablet */
+  @media (max-width: 768px) {
+    .menu-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .notif-toast { min-width: unset; max-width: 90vw; }
   }
+
+  /* Mobile */
+  @media (max-width: 600px) {
+    /* Header */
+    header {
+      padding: 20px 16px 14px;
+      position: relative;
+    }
+    .logo-wrap img { width: 72px !important; height: 72px !important; }
+    .logo-title { font-size: 1.8rem !important; }
+    .tagline { font-size: 0.74rem; letter-spacing: 1px; }
+    .live-badge { font-size: 0.75rem; padding: 4px 10px; }
+
+    /* Langue selector - repositionné en haut à gauche sous le header */
+    .lang-selector-wrap {
+      position: static !important;
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    #langSelector {
+      font-size: 0.8rem !important;
+      padding: 6px 10px !important;
+      width: auto;
+    }
+
+    /* Bouton panier - plus petit et bien placé */
+    .cart-float {
+      top: 12px !important;
+      right: 12px !important;
+      padding: 8px 14px !important;
+      font-size: 0.88rem !important;
+      border-radius: 50px !important;
+      z-index: 200;
+    }
+    .cart-badge {
+      width: 18px !important;
+      height: 18px !important;
+      font-size: 0.75rem !important;
+    }
+
+    /* Categories */
+    .categories {
+      gap: 8px !important;
+      padding: 0 12px 16px !important;
+      justify-content: flex-start !important;
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .categories::-webkit-scrollbar { display: none; }
+    .cat-btn {
+      padding: 7px 14px !important;
+      font-size: 0.85rem !important;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* Menu grid */
+    .menu-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 10px !important;
+    }
+    .menu-section { padding: 0 12px 30px !important; }
+    .section-title { font-size: 1.3rem !important; margin-bottom: 12px; }
+
+    /* Cards */
+    .card-img, .card-img-placeholder { height: 110px !important; }
+    .card-body { padding: 10px 12px 12px !important; }
+    .card-name { font-size: 0.95rem !important; margin-bottom: 3px; }
+    .card-desc { font-size: 0.74rem !important; margin-bottom: 8px; }
+    .card-price { font-size: 1.1rem !important; }
+    .add-btn { width: 30px !important; height: 30px !important; font-size: 1.2rem !important; }
+
+    /* Notifications */
+    #notif-container {
+      left: 10px !important;
+      right: 10px !important;
+      top: 50% !important;
+      transform: translateY(-50%) !important;
+    }
+    .notif-toast {
+      min-width: unset !important;
+      max-width: 100% !important;
+      padding: 16px 18px !important;
+    }
+    .notif-name { font-size: 1.1rem !important; }
+    .notif-msg { font-size: 0.95rem !important; }
+
+    /* Modal panier */
+    .modal {
+      padding: 20px 16px 20px !important;
+      max-height: 92vh !important;
+    }
+    .modal-title { font-size: 1.3rem !important; }
+    .modal-header { margin-bottom: 14px !important; }
+    .modal-header > div > div:last-child { font-size: 0.95rem !important; }
+
+    .cart-item { gap: 10px !important; padding: 10px 0 !important; }
+    .cart-item-name { font-size: 0.88rem !important; }
+    .cart-item-price { font-size: 0.85rem !important; }
+    .cart-item-thumb, .cart-item-thumb-placeholder {
+      width: 42px !important;
+      height: 42px !important;
+    }
+
+    .qty-btn { width: 26px !important; height: 26px !important; font-size: 1rem !important; }
+    .qty-ctrl { gap: 7px !important; }
+
+    .cart-total { font-size: 1.1rem !important; padding: 14px 0 8px !important; }
+    .cart-total strong { font-size: 1.35rem !important; }
+
+    .name-input-wrap { margin: 10px 0 12px !important; }
+    .name-input-wrap label { font-size: 0.85rem !important; margin-bottom: 5px; }
+    .name-input-wrap input,
+    .name-input-wrap textarea {
+      padding: 10px 12px !important;
+      font-size: 0.95rem !important;
+    }
+
+    .whatsapp-btn {
+      padding: 13px !important;
+      font-size: 1.1rem !important;
+      border-radius: 12px !important;
+    }
+
+    /* Footer */
+    footer { font-size: 0.8rem !important; padding: 0 12px 20px !important; }
+  }
+
+  /* Très petits écrans */
+  @media (max-width: 360px) {
+    .logo-title { font-size: 1.55rem !important; }
+    .menu-grid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+    .card-img, .card-img-placeholder { height: 90px !important; }
+    .card-name { font-size: 0.85rem !important; }
+    .cart-float { padding: 7px 11px !important; font-size: 0.8rem !important; }
+  }
+
   
 
   /* THEME TRADITIONNEL & PROFESSIONNEL */
@@ -244,7 +387,7 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
     --shadow: 0 10px 24px rgba(23, 23, 23, 0.08);
   }
   body {
-    font-family: 'Inter', sans-serif;
+    font-family: Arial, sans-serif;
     background: var(--paper);
     color: var(--dark);
   }
@@ -264,7 +407,7 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
   }
   .logo-icon { animation: none; filter: none; }
   .logo-title {
-    font-family: 'Playfair Display', serif;
+    font-family: Arial, sans-serif;
     color: var(--dark);
     text-shadow: none;
     font-size: 2.7rem;
@@ -287,7 +430,7 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
     background: var(--dark);
     color: #fff;
     border-radius: 6px;
-    font-family: 'Inter', sans-serif;
+    font-family: Arial, sans-serif;
     font-size: 0.95rem;
     font-weight: 800;
     box-shadow: 0 8px 20px rgba(0,0,0,0.12);
@@ -304,7 +447,7 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
     background: #fff;
     border: 1px solid var(--border);
     color: var(--dark);
-    font-family: 'Inter', sans-serif;
+    font-family: Arial, sans-serif;
     font-weight: 800;
     border-radius: 6px;
     padding: 9px 16px;
@@ -316,7 +459,7 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
     transform: none;
   }
   .section-title {
-    font-family: 'Playfair Display', serif;
+    font-family: Arial, sans-serif;
     color: var(--dark);
     text-shadow: none;
     font-size: 1.8rem;
@@ -335,13 +478,13 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
   .card-img-placeholder { background: #f1ece3; }
   .card-body { padding: 16px; }
   .card-name {
-    font-family: 'Playfair Display', serif;
+    font-family: Arial, sans-serif;
     font-size: 1.18rem;
     color: var(--dark);
   }
   .card-desc { color: var(--muted); font-size: 0.86rem; }
   .card-price {
-    font-family: 'Inter', sans-serif;
+    font-family: Arial, sans-serif;
     font-weight: 800;
     color: var(--orange);
   }
@@ -357,7 +500,7 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
     border-radius: 8px 8px 0 0;
   }
   .modal-title, .cart-total {
-    font-family: 'Playfair Display', serif;
+    font-family: Arial, sans-serif;
   }
   .close-btn, .qty-btn {
     border-radius: 6px;
@@ -365,11 +508,11 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
   .name-input-wrap input, .name-input-wrap textarea {
     border-radius: 6px;
     border: 1px solid var(--border);
-    font-family: 'Inter', sans-serif;
+    font-family: Arial, sans-serif;
   }
   .whatsapp-btn {
     border-radius: 6px;
-    font-family: 'Inter', sans-serif;
+    font-family: Arial, sans-serif;
     font-weight: 800;
   }
   .notif-toast {
@@ -401,8 +544,8 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
       <span id="livePeopleCount">12 personnes</span> <span data-i18n="ordering">en train de commander</span>
     </div>
   </div>
-  <div style="position:absolute; top:16px; left:16px; display:flex; gap:8px;">
-    <select id="langSelector" onchange="changeLanguage(this.value)" style="padding:8px 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.3); background:rgba(255,255,255,0.9); font-size:0.9rem; cursor:pointer; font-family:'Nunito',sans-serif; font-weight:600;">
+  <div class="lang-selector-wrap" style="position:absolute; top:16px; left:16px; display:flex; gap:8px;">
+    <select id="langSelector" onchange="changeLanguage(this.value)" style="padding:8px 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.3); background:rgba(255,255,255,0.9); font-size:0.9rem; cursor:pointer; font-family:Arial, sans-serif; font-weight:600;">
       <option value="fr">🇫🇷 Français</option>
       <option value="ar">🇸🇦 العربية</option>
       <option value="en">🇬🇧 English</option>
@@ -433,7 +576,7 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
 </div>
     <div id="cartItems"></div>
     <div id="suggestionsSection" style="display:none; padding: 16px 0; border-top: 2px solid #f3f3f3; margin-top: 16px;">
-      <div style="font-family:'Fredoka One',cursive; font-size:1.1rem; color:var(--dark); margin-bottom:12px;">✨ <span data-i18n="addComplements">Ajoutez des compléments</span></div>
+      <div style="font-family:Arial, sans-serif; font-size:1.1rem; color:var(--dark); margin-bottom:12px;">✨ <span data-i18n="addComplements">Ajoutez des compléments</span></div>
       <div id="suggestionsList"></div>
     </div>
     <div id="cartFooter" style="display:none">
@@ -541,11 +684,11 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
         return {
           id: c.id,
           name: c.name,
-          emoji: c.emoji || '✨',
+          emoji: c.emoji || '*',
           price: parseFloat(c.price),
           type: c.type || 'simple',
           hasOptions: c.type === 'options',
-          options: c.options || []
+          options: (typeof c.options === 'string' ? JSON.parse(c.options) : c.options) || []
         };
       });
       
@@ -797,8 +940,8 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
 
   function showCartNotif(itemName) {
     var alertDiv = document.createElement('div');
-    alertDiv.style.cssText = 'position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,0.85); color:#fff; padding:24px 32px; border-radius:16px; font-family:\'Fredoka One\',cursive; font-size:1.3rem; z-index:10000; text-align:center; box-shadow:0 8px 32px rgba(0,0,0,0.4); animation:alertPop 0.3s ease-out;';
-    alertDiv.innerHTML = '✅ '+t('addToCart')+'<br><span style="font-size:1rem; font-family:\'Nunito\',sans-serif; font-weight:600; margin-top:8px; display:block;">'+itemName+'</span>';
+    alertDiv.style.cssText = 'position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,0.85); color:#fff; padding:24px 32px; border-radius:16px; font-family:Arial,sans-serif; font-size:1.3rem; z-index:10000; text-align:center; box-shadow:0 8px 32px rgba(0,0,0,0.4); animation:alertPop 0.3s ease-out;';
+    alertDiv.innerHTML = '✅ '+t('addToCart')+'<br><span style="font-size:1rem; font-family:Arial,sans-serif; font-weight:600; margin-top:8px; display:block;">'+itemName+'</span>';
     
     // Add animation keyframes if not already present
     if(!document.getElementById('alertAnim')) {
@@ -845,23 +988,27 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
         itemEmoji=item.img ? '' : '🍽';
       } else {
         // Check if it's a complement (simple or with options)
-        compItem=COMPLEMENTS.find(function(c){ return c.id==id; });
+        compItem=COMPLEMENTS.find(function(c){ return String(c.id)==String(id); });
         if(compItem) {
           itemName=compItem.name;
           itemPrice=compItem.price;
           itemEmoji=compItem.emoji;
         } else {
-          // Check if it's a drink option (ID > 100000)
-          COMPLEMENTS.forEach(function(comp){
-            if(comp.hasOptions && comp.options) {
-              var optionIndex = id - comp.id * 1000;
-              if(optionIndex >= 0 && optionIndex < comp.options.length) {
-                itemName=comp.options[optionIndex].name;
-                itemPrice=comp.options[optionIndex].price;
-                itemEmoji=comp.emoji;
+          // Check if it's a drink option (ID contains underscore)
+          if(typeof id === 'string' && id.includes('_')) {
+            var parts = id.split('_');
+            var compId = parts[0];
+            var optionIndex = parseInt(parts[1]);
+            COMPLEMENTS.forEach(function(comp){
+              if(String(comp.id)==String(compId) && comp.hasOptions && comp.options) {
+                if(optionIndex >= 0 && optionIndex < comp.options.length) {
+                  itemName=comp.options[optionIndex].name;
+                  itemPrice=comp.options[optionIndex].price;
+                  itemEmoji=comp.emoji;
+                }
               }
-            }
-          });
+            });
+          }
         }
       }
       
@@ -899,7 +1046,7 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
         +'<div style="font-size:1.8rem;">'+comp.emoji+'</div>'
         +'<div style="flex:1;">'
         +'<div style="font-weight:800; font-size:0.9rem; color:var(--dark);">'+comp.name+'</div>'
-        +'<div style="font-family:\'Fredoka One\',cursive; color:var(--orange); font-size:0.85rem;">'+priceText+'</div>'
+        +'<div style="font-family:Arial,sans-serif; color:var(--orange); font-size:0.85rem;">'+priceText+'</div>'
         +'</div>'
         +'<div style="font-size:0.75rem; color:#999;">'+statusText+'</div>'
         +'</div>';
@@ -908,7 +1055,7 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
   }
 
   function handleComplementClick(id) {
-    var comp = COMPLEMENTS.find(function(c){ return c.id===id; });
+    var comp = COMPLEMENTS.find(function(c){ return String(c.id)==String(id); });
     if(!comp) return;
     
     if(comp.hasOptions && comp.options) {
@@ -921,7 +1068,7 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
   function openDrinkOptions(comp) {
     var overlay = document.getElementById('drinkOptionsOverlay');
     if(!overlay) {
-      var overlayHtml = '<div class="modal-overlay" id="drinkOptionsOverlay" onclick="closeDrinkOptions(event)"><div class="modal" onclick="event.stopPropagation()"><div class="modal-header"><div class="modal-title">🥤 Choisissez votre boisson</div><button class="close-btn" onclick="closeDrinkOptions()">✕</button></div><div id="drinkOptionsList" style="display:grid; grid-template-columns:1fr; gap:8px;"></div></div></div>';
+      var overlayHtml = '<div class="modal-overlay" id="drinkOptionsOverlay" onclick="closeDrinkOptions(event)"><div class="modal" onclick="event.stopPropagation()"><div class="modal-header"><div class="modal-title">Choisissez votre boisson</div><button class="close-btn" onclick="closeDrinkOptions()">X</button></div><div id="drinkOptionsList" style="display:grid; grid-template-columns:1fr; gap:8px;"></div></div></div>';
       document.body.insertAdjacentHTML('beforeend', overlayHtml);
       overlay = document.getElementById('drinkOptionsOverlay');
     }
@@ -929,9 +1076,9 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
     var list = document.getElementById('drinkOptionsList');
     var html = '';
     comp.options.forEach(function(opt, index){
-      html += '<div style="background:#fafafa; border:1px solid #eee; border-radius:10px; padding:12px 16px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; transition:all 0.15s;" onclick="selectDrinkOption('+comp.id+','+index+')" onmouseover="this.style.background=\'#f0f0f0\'" onmouseout="this.style.background=\'#fafafa\'">'
+      html += '<div style="background:#fafafa; border:1px solid #eee; border-radius:10px; padding:12px 16px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; transition:all 0.15s;" onclick="selectDrinkOption(\''+comp.id+'\','+index+')" onmouseover="this.style.background=\'#f0f0f0\'" onmouseout="this.style.background=\'#fafafa\'">'
         +'<div style="font-weight:800; color:var(--dark); font-size:0.95rem;">'+opt.name+'</div>'
-        +'<div style="font-family:\'Fredoka One\',cursive; color:var(--orange); font-size:1.1rem;">'+opt.price+' DH</div>'
+        +'<div style="font-family:Arial,sans-serif; color:var(--orange); font-size:1.1rem;">'+opt.price+' DH</div>'
         +'</div>';
     });
     list.innerHTML = html;
@@ -945,11 +1092,11 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
   }
 
   function selectDrinkOption(compId, optionIndex) {
-    var comp = COMPLEMENTS.find(function(c){ return c.id===compId; });
+    var comp = COMPLEMENTS.find(function(c){ return String(c.id)==String(compId); });
     if(!comp || !comp.options) return;
     
     var option = comp.options[optionIndex];
-    var uniqueId = compId * 1000 + optionIndex;
+    var uniqueId = compId + '_' + optionIndex;
     
     cart[uniqueId] = (cart[uniqueId]||0)+1;
     document.getElementById('cartCount').textContent = Object.values(cart).reduce(function(a,b){return a+b;},0);
@@ -993,21 +1140,25 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
         itemPrice=item.price;
       } else {
         // Check if it's a complement (simple or with options)
-        var compItem=COMPLEMENTS.find(function(c){ return c.id==id; });
+        var compItem=COMPLEMENTS.find(function(c){ return String(c.id)==String(id); });
         if(compItem) {
           itemName=compItem.name;
           itemPrice=compItem.price;
         } else {
-          // Check if it's a drink option
-          COMPLEMENTS.forEach(function(comp){
-            if(comp.hasOptions && comp.options) {
-              var optionIndex = id - comp.id * 1000;
-              if(optionIndex >= 0 && optionIndex < comp.options.length) {
-                itemName=comp.options[optionIndex].name;
-                itemPrice=comp.options[optionIndex].price;
+          // Check if it's a drink option (ID contains underscore)
+          if(typeof id === 'string' && id.includes('_')) {
+            var parts = id.split('_');
+            var compId = parts[0];
+            var optionIndex = parseInt(parts[1]);
+            COMPLEMENTS.forEach(function(comp){
+              if(String(comp.id)==String(compId) && comp.hasOptions && comp.options) {
+                if(optionIndex >= 0 && optionIndex < comp.options.length) {
+                  itemName=comp.options[optionIndex].name;
+                  itemPrice=comp.options[optionIndex].price;
+                }
               }
-            }
-          });
+            });
+          }
         }
       }
       

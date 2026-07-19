@@ -1266,21 +1266,52 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
   // Initialize theme on load
   applyTheme();
   
+  // Track site visit
+  async function trackSiteVisit() {
+    try {
+      const client = getSupabaseClient();
+      
+      // Get visitor info
+      const userAgent = navigator.userAgent;
+      const referrer = document.referrer || 'Direct';
+      const timestamp = new Date().toISOString();
+      
+      // Try to get a unique visitor ID from localStorage
+      let visitorId = localStorage.getItem('crispy_visitor_id');
+      if (!visitorId) {
+        visitorId = 'visitor_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('crispy_visitor_id', visitorId);
+      }
+      
+      // Record the visit
+      const { error } = await client
+        .from('site_visits')
+        .insert({
+          visitor_id: visitorId,
+          user_agent: userAgent,
+          referrer: referrer,
+          visit_timestamp: timestamp
+        });
+      
+      if (error) {
+        console.error('Error tracking visit:', error);
+      }
+    } catch (e) {
+      console.error('Error in trackSiteVisit:', e);
+    }
+  }
+
   // Load data from Supabase and render
   async function initializeApp() {
     await Promise.all([
       loadCategoriesFromSupabase(),
       loadMenuFromSupabase(),
-      loadComplementsFromSupabase()
+      loadComplementsFromSupabase(),
+      trackSiteVisit()
     ]);
     renderMenu('all');
     animerCompteur();
   }
-
-  // window.supabase est défini par un <script type="module"> qui est TOUJOURS
-  // différé (exécuté après le parsing du HTML), même placé en haut du fichier.
-  // On attend donc soit l'évènement "supabase-lib-ready", soit qu'il soit déjà
-  // disponible (au cas où ce script s'exécuterait après coup, ex: re-render).
   if (window.supabase) {
     initializeApp();
   } else {

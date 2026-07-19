@@ -509,7 +509,7 @@ body {
 <!-- LOGIN -->
 <div id="loginScreen">
   <div class="login-box">
-    <img class="login-logo" src="images/logo.jpg" alt="Crispy Guys" onerror="this.style.display='none'">
+    <img class="login-logo" src="logo.jpeg" alt="Crispy Guys" style="object-fit:contain;background:#fff;padding:8px;" onerror="this.style.display='none'">
     <div class="login-title">Espace Admin</div>
     <div class="login-sub">Crispy Guys!!</div>
     <input class="login-field" type="text" id="loginUser" placeholder="Nom d'utilisateur" autocomplete="off">
@@ -524,7 +524,7 @@ body {
   <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sidebar-logo">
-      <img src="images/logo.jpg" alt="Logo" onerror="this.outerHTML='<div style=font-size:2.5rem>🐔</div>'">
+      <img src="logo.jpeg" alt="Logo" style="object-fit:contain;background:#fff;padding:6px;" onerror="this.outerHTML='<div style=font-size:2.5rem>🐔</div>'">
       <div class="sidebar-name">Crispy Guys!!</div>
       <div class="sidebar-role">🔧 Administration</div>
     </div>
@@ -978,19 +978,26 @@ async function deleteComplementFromSupabase(id) {
 }
 
 async function loadVisitsFromSupabase() {
+  console.log('🔍 loadVisitsFromSupabase() appelée');
   try {
     const client = getSupabaseClient();
+    console.log('✅ Client Supabase obtenu');
+    
     const { data, error } = await client
       .from('site_visits')
       .select('*')
       .order('visit_timestamp', { ascending: false });
     
-    if (error) throw error;
+    if (error) {
+      console.error('❌ Erreur chargement visites:', error);
+      throw error;
+    }
     
+    console.log('✅ Données visites chargées:', data);
     window.siteVisitsData = data || [];
     return window.siteVisitsData;
   } catch(e) {
-    console.error('Erreur chargement visites:', e);
+    console.error('❌ Erreur dans loadVisitsFromSupabase:', e);
     window.siteVisitsData = [];
     return [];
   }

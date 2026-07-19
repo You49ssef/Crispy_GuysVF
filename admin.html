@@ -512,9 +512,9 @@ body {
     <img class="login-logo" src="logo.jpeg" alt="Crispy Guys" style="object-fit:contain;background:#fff;padding:8px;" onerror="this.style.display='none'">
     <div class="login-title">Espace Admin</div>
     <div class="login-sub">Crispy Guys!!</div>
-    <input class="login-field" type="text" id="loginUser" placeholder="Nom d'utilisateur" autocomplete="off">
-    <input class="login-field" type="password" id="loginPass" placeholder="Mot de passe">
-    <button class="login-btn" onclick="doLogin()">🔐 Se connecter</button>
+    <input class="login-field" type="email" id="loginUser" placeholder="Email" autocomplete="username">
+    <input class="login-field" type="password" id="loginPass" placeholder="Mot de passe" autocomplete="current-password">
+    <button class="login-btn" id="loginBtn" onclick="doLogin()">🔐 Se connecter</button>
     <div class="login-error" id="loginError">❌ Identifiants incorrects</div>
   </div>
 </div>
@@ -701,33 +701,65 @@ body {
 <script src="supabase-config.js"></script>
 <script>
 /* ═══════════════════════════
-   AUTH — mot de passe admin
+   AUTH — Supabase Auth (email + mot de passe)
 ═══════════════════════════ */
-var ADMIN_USER = 'admin';
-var ADMIN_PASS = 'crispy2024';
-
 async function doLogin() {
   var u = document.getElementById('loginUser').value.trim();
   var p = document.getElementById('loginPass').value.trim();
-  if (u === ADMIN_USER && p === ADMIN_PASS) {
+  var err = document.getElementById('loginError');
+  var btn = document.getElementById('loginBtn');
+  if (!u || !p) {
+    err.textContent = '❌ Entrez votre email et votre mot de passe';
+    err.style.display = 'block';
+    return;
+  }
+  btn.disabled = true;
+  btn.textContent = '⏳ Connexion...';
+  try {
+    var client = getSupabaseClient();
+    var result = await client.auth.signInWithPassword({ email: u, password: p });
+    if (result.error) throw result.error;
+    err.style.display = 'none';
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminPanel').style.display  = 'block';
     await renderAll();
-  } else {
-    var err = document.getElementById('loginError');
+  } catch(e) {
+    err.textContent = '❌ Email ou mot de passe incorrect';
     err.style.display = 'block';
-    setTimeout(function(){ err.style.display='none'; }, 3000);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🔐 Se connecter';
   }
 }
 document.addEventListener('keydown', function(e){
   if (e.key === 'Enter') doLogin();
 });
 
-function doLogout() {
+async function doLogout() {
+  try {
+    var client = getSupabaseClient();
+    await client.auth.signOut();
+  } catch(e) {
+    console.error('Erreur déconnexion:', e);
+  }
   document.getElementById('adminPanel').style.display  = 'none';
   document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('loginUser').value = '';
   document.getElementById('loginPass').value = '';
+}
+
+async function checkExistingSession() {
+  try {
+    var client = getSupabaseClient();
+    var result = await client.auth.getSession();
+    if (result.data && result.data.session) {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminPanel').style.display  = 'block';
+      await renderAll();
+    }
+  } catch(e) {
+    console.error('Erreur vérification session:', e);
+  }
 }
 
 function goToSite() { window.open('index.html','_blank'); }
@@ -1007,6 +1039,39 @@ async function loadVisitsFromSupabase() {
   }
 }
 
+async function archiveOldVisits() {
+  try {
+    const client = getSupabaseClient();
+    const { data, error } = await client.rpc('archive_and_cleanup_old_visits');
+    if (error) throw error;
+    var result = Array.isArray(data) ? data[0] : data;
+    if (result && result.archived_count > 0) {
+      console.log('🗄 Archivage : ' + result.archived_count + ' visites (>90j) résumées et supprimées');
+    }
+    return result;
+  } catch(e) {
+    console.error('❌ Erreur archivage visites:', e);
+    return null;
+  }
+}
+
+async function loadVisitArchivesFromSupabase() {
+  try {
+    const client = getSupabaseClient();
+    const { data, error } = await client
+      .from('visit_archives')
+      .select('*')
+      .order('period_end', { ascending: false });
+    if (error) throw error;
+    window.visitArchivesData = data || [];
+    return window.visitArchivesData;
+  } catch(e) {
+    console.error('❌ Erreur chargement archives visites:', e);
+    window.visitArchivesData = [];
+    return [];
+  }
+}
+
 // Fonctions de compatibilité
 function loadMenu() { return MENU; }
 function loadCategories() { return CATEGORIES; }
@@ -1016,11 +1081,13 @@ function loadComplements() { return COMPLEMENTS; }
    RENDER ALL
 ═══════════════════════════ */
 async function renderAll() {
+  await archiveOldVisits();
   await Promise.all([
     loadCategoriesFromSupabase(),
     loadMenuFromSupabase(),
     loadComplementsFromSupabase(),
-    loadVisitsFromSupabase()
+    loadVisitsFromSupabase(),
+    loadVisitArchivesFromSupabase()
   ]);
   renderVisitsStats();
   renderStats();
@@ -1040,7 +1107,7 @@ function renderStats() {
   document.getElementById('statsGrid').innerHTML =
     statCard('📋','Plats total', total, '#fff5f0','#F7621E') +
     statCard('✅','Actifs', active, '#e8f5e9','#2e7d32') +
-    statCard('👥','Visiteurs', window.totalVisits || 0, '#e3f2fd','#1565c0') +
+    statCard('👥','Visites (total)', window.totalVisits || 0, '#e3f2fd','#1565c0') +
     statCard('🗂','Catégories', cats, '#fce4ec','#c62828');
 }
 
@@ -1053,11 +1120,16 @@ function statCard(icon, label, val, bg, color) {
 
 function renderVisitsStats() {
   var visits = window.siteVisitsData || [];
-  
-  // Calculate statistics
+  var archives = window.visitArchivesData || [];
+
+  // Calculate statistics (données récentes, ≤ 90 jours)
   var totalVisits = visits.length;
   var uniqueVisitors = new Set(visits.map(function(v){ return v.visitor_id; })).size;
-  
+
+  // Cumul historique (récent + tout ce qui a été archivé)
+  var archivedTotalVisits = archives.reduce(function(a,r){ return a + (r.total_visits||0); }, 0);
+  var allTimeTotalVisits = totalVisits + archivedTotalVisits;
+
   // Calculate visits today
   var today = new Date().toISOString().split('T')[0];
   var todayVisits = visits.filter(function(v){ 
@@ -1071,8 +1143,8 @@ function renderVisitsStats() {
     return v.visit_timestamp && new Date(v.visit_timestamp) >= oneWeekAgo; 
   }).length;
   
-  // Store total visits for the stats card
-  window.totalVisits = totalVisits;
+  // Store total visits for the stats card (compteur cumulé, tout historique confondu)
+  window.totalVisits = allTimeTotalVisits;
   
   // Render detailed stats in the stats tab
   var statsContent = document.getElementById('statsContent');
@@ -1080,9 +1152,9 @@ function renderVisitsStats() {
     statsContent.innerHTML = 
       '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:24px;">' +
         '<div style="background:#fafafa;border-radius:16px;padding:20px;border:1px solid #eee">' +
-          '<div style="font-family:Arial,sans-serif;font-size:1.2rem;color:var(--dark)">👥 Total Visiteurs</div>' +
-          '<div style="font-size:2rem;font-weight:800;color:var(--orange);margin-top:8px">' + uniqueVisitors + '</div>' +
-          '<div style="font-size:0.85rem;color:#aaa;margin-top:4px">' + totalVisits + ' visites totales</div>' +
+          '<div style="font-family:Arial,sans-serif;font-size:1.2rem;color:var(--dark)">👥 Total Visites (tout historique)</div>' +
+          '<div style="font-size:2rem;font-weight:800;color:var(--orange);margin-top:8px">' + allTimeTotalVisits + '</div>' +
+          '<div style="font-size:0.85rem;color:#aaa;margin-top:4px">' + uniqueVisitors + ' visiteurs uniques (90 derniers jours)</div>' +
         '</div>' +
         '<div style="background:#fafafa;border-radius:16px;padding:20px;border:1px solid #eee">' +
           '<div style="font-family:Arial,sans-serif;font-size:1.2rem;color:var(--dark)">📅 Visites Aujourd\'hui</div>' +
@@ -1095,13 +1167,13 @@ function renderVisitsStats() {
           '<div style="font-size:0.85rem;color:#aaa;margin-top:4px">7 derniers jours</div>' +
         '</div>' +
         '<div style="background:#fafafa;border-radius:16px;padding:20px;border:1px solid #eee">' +
-          '<div style="font-family:Arial,sans-serif;font-size:1.2rem;color:var(--dark)">🔄 Visites/Visiteur</div>' +
-          '<div style="font-size:2rem;font-weight:800;color:#c62828;margin-top:8px">' + (uniqueVisitors > 0 ? (totalVisits / uniqueVisitors).toFixed(1) : '0') + '</div>' +
-          '<div style="font-size:0.85rem;color:#aaa;margin-top:4px">Moyenne</div>' +
+          '<div style="font-family:Arial,sans-serif;font-size:1.2rem;color:var(--dark)">🗄 Archivées</div>' +
+          '<div style="font-size:2rem;font-weight:800;color:#c62828;margin-top:8px">' + archivedTotalVisits + '</div>' +
+          '<div style="font-size:0.85rem;color:#aaa;margin-top:4px">Visites &gt;90j résumées</div>' +
         '</div>' +
       '</div>' +
-      '<div style="background:#fafafa;border-radius:16px;padding:20px;border:1px solid #eee">' +
-        '<div style="font-family:Arial,sans-serif;font-size:1.2rem;color:var(--dark);margin-bottom:16px">📊 Dernières Visites</div>' +
+      '<div style="background:#fafafa;border-radius:16px;padding:20px;border:1px solid #eee;margin-bottom:16px;">' +
+        '<div style="font-family:Arial,sans-serif;font-size:1.2rem;color:var(--dark);margin-bottom:16px">📊 Dernières Visites (90 derniers jours)</div>' +
         '<table style="width:100%;border-collapse:collapse">' +
           '<thead>' +
             '<tr style="border-bottom:2px solid #eee">' +
@@ -1124,6 +1196,30 @@ function renderVisitsStats() {
           '</tbody>' +
         '</table>' +
         (visits.length === 0 ? '<div style="text-align:center;padding:30px;color:#bbb;font-weight:800">Aucune visite enregistrée</div>' : '') +
+      '</div>' +
+      '<div style="background:#fafafa;border-radius:16px;padding:20px;border:1px solid #eee">' +
+        '<div style="font-family:Arial,sans-serif;font-size:1.2rem;color:var(--dark);margin-bottom:16px">🗄 Historique archivé (par période de 90j)</div>' +
+        '<table style="width:100%;border-collapse:collapse">' +
+          '<thead>' +
+            '<tr style="border-bottom:2px solid #eee">' +
+              '<th style="text-align:left;padding:10px;font-size:0.85rem;color:#888;font-weight:800">Période</th>' +
+              '<th style="text-align:left;padding:10px;font-size:0.85rem;color:#888;font-weight:800">Visites</th>' +
+              '<th style="text-align:left;padding:10px;font-size:0.85rem;color:#888;font-weight:800">Visiteurs uniques</th>' +
+            '</tr>' +
+          '</thead>' +
+          '<tbody>' +
+            archives.map(function(a){
+              var start = a.period_start ? new Date(a.period_start).toLocaleDateString('fr-FR') : 'N/A';
+              var end = a.period_end ? new Date(a.period_end).toLocaleDateString('fr-FR') : 'N/A';
+              return '<tr style="border-bottom:1px solid #f5f5f5">' +
+                '<td style="padding:10px;font-size:0.9rem">' + start + ' → ' + end + '</td>' +
+                '<td style="padding:10px;font-size:0.9rem">' + a.total_visits + '</td>' +
+                '<td style="padding:10px;font-size:0.9rem">' + a.unique_visitors + '</td>' +
+              '</tr>';
+            }).join('') +
+          '</tbody>' +
+        '</table>' +
+        (archives.length === 0 ? '<div style="text-align:center;padding:30px;color:#bbb;font-weight:800">Aucune période archivée pour le moment</div>' : '') +
       '</div>';
   }
 }
@@ -1527,6 +1623,15 @@ function showToast(msg) {
   document.getElementById('toastMsg').textContent = msg;
   t.style.display = 'flex';
   setTimeout(function(){ t.style.display='none'; }, 3000);
+}
+
+/* ═══════════════════════════
+   INIT — vérifier si déjà connecté
+═══════════════════════════ */
+if (window.supabase) {
+  checkExistingSession();
+} else {
+  window.addEventListener('supabase-lib-ready', checkExistingSession);
 }
 </script>
 </body>

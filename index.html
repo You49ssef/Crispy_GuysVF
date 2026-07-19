@@ -536,7 +536,7 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
 
 <header>
   <div class="logo-wrap">
-    <img src="images/logo.jpg" alt="Crispy Guys" style="width:110px;height:110px;border-radius:50%;object-fit:cover;border:4px solid rgba(255,255,255,0.6);box-shadow:0 8px 24px rgba(0,0,0,0.18);margin-bottom:4px;" onerror="this.outerHTML='<div class=logo-icon>🐔</div>'">
+    <img src="logo.jpeg" alt="Crispy Guys" style="width:140px;height:140px;border-radius:12px;object-fit:contain;background:#fff;border:3px solid rgba(255,255,255,0.8);box-shadow:0 12px 32px rgba(0,0,0,0.15);margin-bottom:8px;padding:8px;" onerror="this.outerHTML='<div class=logo-icon>🐔</div>'">
     <div class="logo-title">Crispy <span>Guys!!</span></div>
     <div class="tagline" data-i18n="tagline">Snack · Fast Food · Livraison</div>
     <div class="live-badge">
@@ -1022,9 +1022,10 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
         +'<div class="cart-item-price">'+(itemPrice*qty)+' DH</div>'
         +'</div>'
         +'<div class="qty-ctrl">'
-        +'<button class="qty-btn" onclick="changeQty('+id+',-1)">−</button>'
+        +'<button class="qty-btn" onclick="changeQty(\''+id+'\',-1)">−</button>'
         +'<span class="qty-num">'+qty+'</span>'
-        +'<button class="qty-btn" onclick="changeQty('+id+',1)">+</button>'
+        +'<button class="qty-btn" onclick="changeQty(\''+id+'\',1)">+</button>'
+        +'<button class="qty-btn" style="background:#fce4ec;color:#c62828;" onclick="removeFromCart(\''+id+'\')" title="Supprimer">×</button>'
         +'</div></div>';
     });
     container.innerHTML=html;
@@ -1121,6 +1122,12 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
     renderCartModal();
   }
 
+  function removeFromCart(id){
+    delete cart[id];
+    document.getElementById('cartCount').textContent=Object.values(cart).reduce(function(a,b){return a+b;},0);
+    renderCartModal();
+  }
+
   /* WHATSAPP */
   function buildMessage(){
     var name=document.getElementById('clientName').value.trim();
@@ -1168,6 +1175,12 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
     });
     msg+='\nTotal : '+total+' DH';
     if(note) msg+='\n\nNote : '+note;
+    
+    // Add location reminder
+    if(!location) {
+      msg+='\n\n📍 N\'oubliez pas d\'envoyer votre localisation pour la livraison !';
+    }
+    
     return msg;
   }
 
@@ -1268,8 +1281,10 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
   
   // Track site visit
   async function trackSiteVisit() {
+    console.log('🔍 trackSiteVisit() appelée');
     try {
       const client = getSupabaseClient();
+      console.log('✅ Client Supabase obtenu');
       
       // Get visitor info
       const userAgent = navigator.userAgent;
@@ -1283,8 +1298,10 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
         localStorage.setItem('crispy_visitor_id', visitorId);
       }
       
+      console.log('📝 Données visite:', { visitorId, referrer, timestamp });
+      
       // Record the visit
-      const { error } = await client
+      const { data, error } = await client
         .from('site_visits')
         .insert({
           visitor_id: visitorId,
@@ -1294,10 +1311,12 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
         });
       
       if (error) {
-        console.error('Error tracking visit:', error);
+        console.error('❌ Erreur tracking visite:', error);
+      } else {
+        console.log('✅ Visite enregistrée avec succès:', data);
       }
     } catch (e) {
-      console.error('Error in trackSiteVisit:', e);
+      console.error('❌ Erreur dans trackSiteVisit:', e);
     }
   }
 
@@ -1312,6 +1331,11 @@ font-weight: 700; font-size: 1.3rem; cursor: pointer;
     renderMenu('all');
     animerCompteur();
   }
+
+  // window.supabase est défini par un <script type="module"> qui est TOUJOURS
+  // différé (exécuté après le parsing du HTML), même placé en haut du fichier.
+  // On attend donc soit l'évènement "supabase-lib-ready", soit qu'il soit déjà
+  // disponible (au cas où ce script s'exécuterait après coup, ex: re-render).
   if (window.supabase) {
     initializeApp();
   } else {

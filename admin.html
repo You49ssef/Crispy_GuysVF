@@ -606,8 +606,12 @@ body {
     <!-- STATS TAB -->
     <div id="tabStats" style="display:none">
       <div class="section-card">
-        <div class="section-head"><h2>📊 Résumé du menu</h2></div>
+        <div class="section-head"><h2>👥 Visiteurs du site</h2></div>
         <div style="padding:24px;" id="statsContent"></div>
+      </div>
+      <div class="section-card">
+        <div class="section-head"><h2>📊 Résumé du menu</h2></div>
+        <div style="padding:24px;" id="categoryStatsContent"></div>
       </div>
     </div>
   </div>
@@ -1018,12 +1022,12 @@ async function renderAll() {
     loadComplementsFromSupabase(),
     loadVisitsFromSupabase()
   ]);
+  renderVisitsStats();
   renderStats();
   renderCategoryList();
   renderCatTabs();
   renderTable(currentCat);
   renderComplementsTable();
-  renderVisitsStats();
 }
 
 function renderStats() {
@@ -1191,7 +1195,8 @@ function renderTable(cat) {
       +'</div>';
   });
   statHtml += '</div>';
-  document.getElementById('statsContent').innerHTML = statHtml;
+  var catStatsEl = document.getElementById('categoryStatsContent');
+  if (catStatsEl) catStatsEl.innerHTML = statHtml;
 }
 
 /* ═══════════════════════════
@@ -1203,6 +1208,7 @@ function showTab(tab, btn) {
   document.getElementById('tabMenu').style.display       = tab==='menu'       ? 'block' : 'none';
   document.getElementById('tabComplements').style.display = tab==='complements' ? 'block' : 'none';
   document.getElementById('tabStats').style.display      = tab==='stats'      ? 'block' : 'none';
+  if (tab === 'stats') renderVisitsStats();
 }
 
 /* ═══════════════════════════
